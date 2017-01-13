@@ -1,188 +1,85 @@
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <memory>
-#include <sstream>
-#include <cstring>
-#include <map>
-#include <algorithm>
-#include "entry.hpp"
+﻿#include "main.hpp"
 
-extern "C" {
-	extern char _binary_source_start;
-	extern char _binary_source_end;
-};
-
-using ptr_t = std::shared_ptr<Entry>;
-using map_t = std::multimap<std::string, ptr_t>;
-using vec_t = std::vector<std::string>;
-
-
-std::string lower(std::string const s) {
-	std::string str = s;
-	for (size_t i = 0; i < str.length();) {
-		if (std::isalpha(str[i]) && std::isupper(str[i])) {
-			str[i] = std::tolower(str[i]);
-			i += 1;
-		}
-		// not ascii characters
-		else {
-			std::string temp;
-			temp += str[i];
-			temp += str[i + 1];
-			if (temp == "Þ") { temp = "þ"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Ð") { temp = "ð"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Æ") { temp = "æ"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Œ") { temp = "œ"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Ö") { temp = "ö"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Á") { temp = "á"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "É") { temp = "é"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Í") { temp = "í"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Ó") { temp = "ó"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Ú") { temp = "ú"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Ý") { temp = "ý"; str.erase(i, 2); str.insert(i, temp); }
-			else if (temp == "Ø") { temp = "ø"; str.erase(i, 2); str.insert(i, temp); }
-			else {}
-			i += 2;
-		}
+int main() {
+	initscr(); cbreak(); timeout(-1); noecho(); keypad(stdscr, TRUE);
+	waddstr(stdscr, "Initializing...\n\n"); wrefresh(stdscr);
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+	auto mapptr = std::shared_ptr<std::vector<mapptr_t>>(new std::vector<mapptr_t>);
+	for (size_t i = 0; i < 7; ++i) {
+		mapptr->push_back(mapptr_t(new infl_t));
 	}
-	return str;
-}
-
-
-void searchEng(map_t & map, std::string & str) {
-	auto result = std::map<std::string, std::string>();
-	for (auto && i : map) {
-		auto word = i.second->getDef();
-		for (auto j : *word) {
-			auto orig = lower(j);
-			auto pos = orig.find(" " + str + ",");
-			if (pos != std::string::npos) {
-                std::string temp = j.substr(pos + 1, str.length());
-                temp = "\033[1;31;4m" + temp + "\033[0m";
-				j.replace(pos + 1, str.length(), temp);
-				std::string key = "\033[1m" + i.first + "\033[0m";
-				result.insert(std::make_pair(key, j));
+	
+	auto index = std::shared_ptr<std::multimap<std::string, std::string>>(new std::multimap<std::string, std::string>);
+	auto forms = std::shared_ptr<std::set<std::string>>(new std::set<std::string>);
+	mapentry_t dict(new map_t);
+	std::thread t_forms(importForm, forms);
+	std::thread t(import, dict);
+	std::thread t_index(importIndex, index);
+	std::thread t1(import_infl, mapptr, 1);
+	std::thread t2(import_infl, mapptr, 2);
+	std::thread t3(import_infl, mapptr, 3);
+	std::thread t4(import_infl, mapptr, 4);
+	std::thread t5(import_infl, mapptr, 5);
+	std::thread t6(import_infl, mapptr, 6);
+	std::thread t7(import_infl, mapptr, 7);
+	t.join(); t_index.join(); t_forms.join();
+	t1.join(); t2.join(); t3.join();
+	t4.join(); t5.join(); t6.join(); t7.join();
+	end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed = end - start;
+	printw("Initialization completed within ");
+	for (auto i : std::to_string(elapsed.count())) {
+		waddch(stdscr, i | A_BOLD);
+	}
+	printw(" seconds.\n"); wrefresh(stdscr);
+	while (true) {
+		printw("Please choose one of the options below: \n");
+		printw("\ti: Find definition in the Icelandic - English dictionary;\n");
+		printw("\te: Search English words in the mentioned dictionary;\n");
+		printw("\tt: Search text in the mentioned dictionary;\n");
+		printw("\tr: Search with regular expression in the mentioned dictionary;\n");
+		printw("\tf: Insert a word and find its original form;\n");
+		printw("\ts: Print out a specific inflection of the inserted word;\n");
+		printw("\tp: Print out all inflectional forms of the inserted word;\n");
+		printw("\tq: Quit.\n");
+		printw(">> ");
+		wrefresh(stdscr);
+		int ch;
+		fflush(stdin);
+		while ((ch = getch()) && (ch != KEY_ENTER)) {
+			waddch(stdscr, ch); wrefresh(stdscr);
+			if (ch == 'e') {
+				searchEng(dict);
+			}
+			else if (ch == 'i') {
+				searchIcl(dict);
+			}
+			else if (ch == 't') {
+				searchTxt(dict);
+			}
+			else if (ch == 'r') {
+				searchReg(dict);
+			}
+			else if (ch == 'f') {
+				find_orig(mapptr);
+			}
+			else if (ch == 'p') {
+				plot(mapptr, index);
+			}
+			else if (ch == 's') {
+				printForm(mapptr, index, forms);
+			}
+			else if (ch == 'q') { 
+				printw("\nProgram now terminates.\n"); 
+				endwin(); nocbreak(); echo(); keypad(stdscr, FALSE); system("reset");
+				return 0;
+		}
+			else {
+				printw("\nParameter invalid. Please try again.\n>> ");
 			}
 		}
 	}
-	if (result.empty()) {
-		std::cout << "Word not found.\n";
-	}
-	else {
-		std::cout << "A total of " << result.size();
-		std::cout << ((result.size() > 1) ? " entries" : " entry");
-		std::cout << " have been found."
-			<< "\n------------------------------\n\n";
-		for (auto i : result) {
-			std::cout << i.first << ":  ";
-			std::cout << ((i.second[0] == '\t') ? i.second.substr(1) : i.second)
-				<< "\n------------------------------\n\n";
-		}
-	}
-}
-
-void searchTxt(map_t & map, std::string & str) {
-	auto result = std::map<std::string, std::string>();
-	for (auto && i : map) {
-		auto word = i.second->getDef();
-		for (auto j : *word) {
-			auto orig = lower(j);
-			auto pos = orig.find(str);
-			if (pos != std::string::npos) {
-                std::string temp = j.substr(pos, str.length());
-                temp = "\033[1;31;4m" + temp + "\033[0m";
-				j.replace(pos, str.length(), temp);
-				std::string key = "\033[1m" + i.first + "\033[0m";
-				result.insert(std::make_pair(key, j));
-			}
-		}
-	}
-	if (result.empty()) {
-		std::cout << "Word not found.\n";
-	}
-	else {
-		std::cout << "A total of " << result.size();
-		std::cout << ((result.size() > 1) ? " entries" : " entry");
-		std::cout << " have been found.\n"
-			<< "------------------------------\n\n";
-		for (auto i : result) {
-			std::cout << i.first << ":  " << i.second.substr(1) << "\n------------------------------\n\n";
-		}
-	}
-}
-
-void searchIcl(map_t & dict, std::string & word) {
-	auto itr = dict.find(word);
-	std::cout << "\n------------------------------\n\n";
-	if (itr != dict.end()) {
-		do {
-			itr->second->print();
-			std::cout << "\n------------------------------\n\n";
-			itr = std::next(itr);
-		} while (std::next(itr)->first == itr->first);
-	}
-	else {
-		std::cout << "Word not found.\n";
-	}
-}
-
-int main(int argc, char ** argv)
-{
-	if (argc != 3) {
-		std::cout << "Not the right amount of parameters.";
-		return -1;
-	}
-	std::string flag = argv[1];
-	std::string input = lower(std::string(argv[2]));
-	std::string source = &_binary_source_start;
-	std::istringstream file(source);
-	map_t dict;
-	for (std::string str; std::getline(file, str); ) { //for every line
-		std::istringstream iss(str);
-		std::string name;
-		std::vector<std::string> vec;
-		if (str[0] == '*') {
-			iss >> name;
-			name.erase(std::remove_if(name.begin(), name.end(), [](char i) { return (i == '-' || i == '*' || i == ',' || i == ')'); }), name.end());
-		}
-		bool flag = true;
-		std::string temp;
-		std::string sentence;
-		size_t index = 1;
-		while (iss >> temp) {
-			if (std::find(temp.begin(), temp.end(), '[') != temp.end()) {
-				flag = false;
-			}
-			if (std::find(temp.begin(), temp.end(), ']') != temp.end()) {
-				flag = true;
-			}
-			if (temp[0] == '+') {
-				sentence += (flag) ? "\n" : " ";
-				vec.push_back(sentence);
-				sentence = (flag) ? "\t" + std::to_string(index) + ". " : "";
-				index += (flag) ? 1 : 0;
-				temp = temp.substr(1);
-			}
-			temp += " ";
-			sentence += temp;
-		}
-		ptr_t ent(new Entry(name, vec));
-		dict.insert(std::make_pair(name, ent));
-	};
-	if (flag == "-e") {
-		searchEng(dict, input);
-	}
-	else if (flag == "-i") {
-		searchIcl(dict, input);
-	}
-	else if (flag == "-t") {
-		searchTxt(dict, input);
-	}
-	else {
-		std::cout << "Parameter invalid. Program now terminates.\n";
-		return -1;
-	}
-    return 0;
+	return 0;
 }
 
