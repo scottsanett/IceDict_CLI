@@ -1,4 +1,4 @@
-# Old-Icelandic-Dictionary
+# Old Icelandic Dictionary
 
 This dictionary runs on LINUX only.
 
