@@ -50,7 +50,6 @@ int main() {
 	while (true) {
 		printw("Please choose one of the options below: \n");
 		printw("\ti: Find definition in the Icelandic - English dictionary;\n");
-		printw("\te: Search English words in the mentioned dictionary;\n");
 		printw("\tt: Search text in the mentioned dictionary;\n");
 		printw("\tr: Search with regex in the mentioned dictionary;\n");
 		printw("\tf: Insert a word and find its original form;\n");
@@ -63,28 +62,32 @@ int main() {
 		fflush(stdin);
 		while ((ch = getch()) && (ch != KEY_ENTER)) {
 			waddch(stdscr, ch); wrefresh(stdscr);
-			if (ch == 'e') {
-				searchEng(dictvec);
-			}
-			else if (ch == 'i') {
+			if (ch == 'i') {
+				keypad(stdscr, TRUE);
 				searchIcl(dictvec, wordindex);
 			}
 			else if (ch == 't') {
+				keypad(stdscr, TRUE);
 				searchTxt(dictvec);
 			}
 			else if (ch == 'r') {
+				keypad(stdscr, TRUE);
 				searchReg(dictvec);
 			}
 			else if (ch == 'f') {
+				keypad(stdscr, TRUE);
 				find_orig(mapptr, inflectionIndex);
 			}
 			else if (ch == 'p') {
+				keypad(stdscr, TRUE);
 				plot(mapptr, index);
 			}
 			else if (ch == 's') {
+				keypad(stdscr, TRUE);
 				printForm(mapptr, index, forms);
 			}
-			else if (ch == 'q') { 
+			else if (ch == 'q') {
+				keypad(stdscr, TRUE);
 				printw("\nProgram now terminates.\n"); 
 				endwin(); nocbreak(); echo(); keypad(stdscr, FALSE); system("reset");
 				return 0;

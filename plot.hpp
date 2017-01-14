@@ -38,7 +38,7 @@ void plotQuery(mapvecptr_t const maps, mapvecptr_t results, size_t index, std::s
 		}
 		std::string str;
 		size_t sz = 0;
-		for (std::string & i : pos->second) {
+		for (std::string i : pos->second) {
 			if (sz++ == 1) {
 				auto length = i.length();
 				auto count = [&]() {
@@ -92,17 +92,21 @@ void plot(mapvecptr_t const maps, std::shared_ptr<std::multimap<std::string, std
 		display();
 		return;
 	}
+	std::string line;
+	int y, x;
+	getmaxyx(stdscr, y, x);
+	for (size_t i = 0; i < x; ++i) { line += "-"; }
+	line = "\n" + line + "\n\n";
 	fout << "A total of " << resultSize;
 	fout << ((resultSize > 1) ? " entries have" : " entry has");
-	fout << " been found.\n";
-	fout << "\n------------------------------\n\n";
+	fout << " been found.\n" << line;
 	for (auto && i : *results) {
 		for (auto && j : *i) {
 			fout << "\033[1m" << j.first << "\033[0m" << "\n\n";
 			for (auto && k : j.second) {
 				fout << k << '\n';
 			}
-			fout << "\n------------------------------\n\n";
+			fout << line;
 		}
 	}
 	fout.close(); display();

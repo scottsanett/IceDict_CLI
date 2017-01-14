@@ -51,14 +51,17 @@ void find_orig(mapvecptr_t const maps, std::shared_ptr<std::set<std::string>> co
 		display();
     }
     else {
+		std::string line;
+		int y, x;
+		getmaxyx(stdscr, y, x);
+		for (size_t i = 0; i < x; ++i) { line += "-"; }
+		line = "\n" + line + "\n\n";
 		fout << "A total of " << resultSize;
 		fout << ((resultSize > 1) ? " entries have" : " entry has");
-		fout << " been found.\n";
-		fout << "\n------------------------------\n\n";
+		fout << " been found.\n" << line;
         for (auto i : *results) {
 			for (auto j : *i) {
-				fout << "\033[1m" << j.first << "\033[0m\t" << j.second;
-				fout << "\n------------------------------\n\n";
+				fout << "\033[1m" << j.first << "\033[0m\t" << j.second << line;
 			}
         }
     }

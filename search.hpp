@@ -13,11 +13,13 @@
 void display() {
 	system("cat temp | less && rm temp");
 	clear();
-	printw("Please choose one of the options below: \n");
+	int x, y;
+	getmaxyx(stdscr, y, x);
+	for (size_t i = 0; i < x; ++i) { printw("-"); }
+	printw("\nPlease choose one of the options below: \n");
 	printw("\ti: Find definition in the Icelandic - English dictionary;\n");
-	printw("\te: Search English words in the mentioned dictionary;\n");
 	printw("\tt: Search text in the mentioned dictionary;\n");
-	printw("\tr: Search with regex in the mentioned dictionary;\n");
+	printw("\tr: Search text with regex in the mentioned dictionary;\n");
 	printw("\tf: Insert a word and find its original form;\n");
 	printw("\ts: Print out a specific inflection of the inserted word;\n");
 	printw("\tp: Print out all inflectional forms of the inserted word;\n");
@@ -85,47 +87,6 @@ std::string lower(std::string const s) {
 	return str;
 }
 
-void searchEng(std::shared_ptr<std::vector<mapentry_t>> dict) {
-	printw("\n\nPlease insert your word here: ");
-	std::string str;
-	insert(str);
-	std::ofstream fout("temp");
-	auto result = std::map<std::string, std::string>();
-	for (auto && map : *dict) {
-		for (auto && i : *map) {
-			auto word = i.second->getDef();
-			for (auto j : *word) {
-				auto orig = lower(j);
-				auto pos = orig.find(" " + str + ",");
-				if (pos != std::string::npos) {
-					std::string temp = j.substr(pos + 1, str.length());
-					temp = "\033[1;31;4m" + temp + "\033[0m";
-					j.replace(pos + 1, str.length(), temp);
-					std::string key = "\033[1m" + i.first + "\033[0m";
-					result.insert(std::make_pair(key, j));
-				}
-			}
-		}
-	}
-	if (result.empty()) {
-		printw("Word not found.\n");
-	}
-	else {
-		fout << "\n------------------------------\n\n";
-		fout << "A total of " << result.size();
-		fout << ((result.size() > 1) ? " entries have" : " entry has");
-		fout << " been found."
-			<< "\n------------------------------\n\n";
-		for (auto i : result) {
-			if (i.second[0] == '\t') {
-				i.second.erase(i.second.begin());
-			}
-			fout << i.first << ":  ";
-			fout << i.second << "\n------------------------------\n\n";
-		}
-	}
-	fout.close(); display();
-}
 
 void searchTxt(std::shared_ptr<std::vector<mapentry_t>> dict) {
 	printw("\n\nPlease insert your word here: ");
@@ -153,17 +114,22 @@ void searchTxt(std::shared_ptr<std::vector<mapentry_t>> dict) {
 		printw("Word not found.\n");
 	}
 	else {
-		fout << "\n------------------------------\n\n";
+		std::string line;
+		int y, x;
+		getmaxyx(stdscr, y, x);
+		for (size_t i = 0; i < x; ++i) { line += "-"; }
+		line = "\n" + line + "\n\n";
+		fout << line;
 		fout << "A total of " << result.size();
 		fout << ((result.size() > 1) ? " entries have" : " entry has");
 		fout << " been found.\n"
-			<< "------------------------------\n\n";
+			<< line;
 		for (auto i : result) {
 			if (i.second[0] == '\t') {
 				i.second.erase(i.second.begin());
 			}
 			fout << i.first << ":  ";
-			fout << i.second << "\n------------------------------\n\n";
+			fout << i.second << line;
 		}
 	}
 	fout.close(); display();
@@ -199,17 +165,21 @@ void searchReg(std::shared_ptr<std::vector<mapentry_t>> dict) {
 		printw("Word not found.\n");
 	}
 	else {
-		fout << "\n------------------------------\n\n";
+		std::string line;
+		int y, x;
+		getmaxyx(stdscr, y, x);
+		for (size_t i = 0; i < x; ++i) { line += "-"; }
+		line = "\n" + line + "\n\n";
+		fout << line;
 		fout << "A total of " << result.size();
 		fout << ((result.size() > 1) ? " entries have" : " entry has");
-		fout << " been found.\n"
-			<< "------------------------------\n\n";
+		fout << " been found.\n" << line;
 		for (auto i : result) {
 			if (i.second[0] == '\t') {
 				i.second.erase(i.second.begin());
 			}
 			fout << i.first << ":  ";
-			fout << i.second << "\n------------------------------\n\n";
+			fout << i.second << line;
 		}
 	}
 	fout.close(); display();
@@ -250,13 +220,18 @@ void searchIcl(std::shared_ptr<std::vector<mapentry_t>> & dict, std::shared_ptr<
 	auto size = [&]() { size_t sz = 0; for (auto && i : *results) { sz += i->size(); } return sz; }();
 	if (size == 0) { printw("Word not found.\n"); }
 	else {
+		std::string line;
+		int y, x;
+		getmaxyx(stdscr, y, x);
+		for (size_t i = 0; i < x; ++i) { line += "-"; }
+		line = "\n" + line + "\n\n";
 		for (auto && i : *results) {
 			for (auto && j : *i) {
-				fout << "\n------------------------------\n\n";
+				fout << line;
 				fout << "\033[1m" + j.first + "\033[0m" << ", ";
 				fout << j.second << '\n';
 			}
-			fout << "\n------------------------------\n\n";
+			fout << line;
 		}
 	}
 	fout.close(); display();

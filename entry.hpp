@@ -14,11 +14,6 @@ class Entry {
 public:
 	Entry() = default;
 	Entry(std::string str, std::vector<std::string> vec): name(str), definition(vec){}
-	void print(std::ofstream & fout) {
-		fout << "\n------------------------------\n\n";
-		fout << "\033[1m" + name + "\033[0m" << ", ";
-		for (auto && i : definition) { fout << i; }
-	}
 	std::shared_ptr<vec_t> getDef() const { return std::make_shared<vec_t>(definition); }
 };
 
