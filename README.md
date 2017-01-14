@@ -5,7 +5,7 @@ This dictionary runs on LINUX only.
 Dependencies: ncurses, pthread
 
 The dictionary files can be downloaded from this link: 
-http://pan.baidu.com/s/1mhOWYog
+http://pan.baidu.com/s/1gfDmkbL
 
 Compile:
 
