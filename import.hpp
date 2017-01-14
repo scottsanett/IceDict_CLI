@@ -6,18 +6,23 @@
 #include <sstream>
 #include <map>
 #include <algorithm>
+#include "alphabet.hpp"
+#include "alias.hpp"
 
-extern "C" {
-	extern char _binary___alphabet_source_start;
-	extern char _binary___alphabet_source_end;
-};
+/* import the index for all words in the two dictionaries */
+void import_wordindex(std::shared_ptr<std::set<std::string>> wordindex) {
+	std::string source(&_binary___alphabet_wordindex_start, &_binary___alphabet_wordindex_end);
+	std::istringstream file(source);
+	std::string line;
+	while (std::getline(file, line)) {
+		wordindex->insert(line);
+	}
+	std::ofstream output("text");
+}
 
-using ptr_t = std::shared_ptr<Entry>;
-using map_t = std::multimap<std::string, ptr_t>;
-using mapentry_t = std::shared_ptr<map_t>;
-
-void import(mapentry_t dict) {
-	std::string source(&_binary___alphabet_source_start, &_binary___alphabet_source_end);
+void import(std::shared_ptr<std::vector<mapentry_t>> dictvec, std::shared_ptr<std::string> sourceptr, size_t index) {
+	auto dict = dictvec->at(index);
+	std::string source = *sourceptr;
 	std::istringstream file(source);
 	for (std::string str; std::getline(file, str); ) { //for every line
 		std::istringstream iss(str);
@@ -84,5 +89,38 @@ void import(mapentry_t dict) {
 	};
 }
 
+void import_infl(std::shared_ptr<std::vector<mapptr_t>> mapvec, size_t i) {
+	std::string inf = *alphabet[i];
+	std::istringstream file(inf);
+	std::string line;
+	auto map = mapvec->at(i - 1);
+	while (std::getline(file, line)) {
+		std::istringstream iss(line);
+		std::string key;
+		std::string word;
+		std::string temp;
+		vec_t tmpvec;
+		while (iss >> word) {
+			if (word.back() == ';') {
+				auto modif = word.substr(0, word.length() - 1);
+				if (temp.length() == 0) { temp = modif; }
+				else { temp += " " + modif; }
+				if (key.length() == 0) { key = modif; }
+				else { tmpvec.emplace_back(temp); }
+				temp = "";
+			}
+			else { temp += " " + word; }
+		}
+		map->insert(std::make_pair(key, tmpvec));
+	}
+}
 
+void import_index(std::shared_ptr<std::set<std::string>> inflectionIndex) {
+	std::string source(&_binary___alphabet_inflection_start, &_binary___alphabet_inflection_end);
+	std::istringstream file(source);
+	std::string line;
+	while (std::getline(file, line)) {
+		inflectionIndex->insert(line);
+	}
+}
 #endif

@@ -2,8 +2,9 @@
 #define __SEARCH_INFLECTION__
 #include "thread"
 #include "alias.hpp"
-#include "import_inflection.hpp"
+#include "import.hpp"
 #include "search.hpp"
+#include "autocomplete.hpp"
 
 void searchInfl(mapvecptr_t const maps, resultptrmapvecptr_t results, size_t index, std::string word) {
 	std::ofstream fout("temp", std::ios::app);
@@ -26,10 +27,10 @@ void searchInfl(mapvecptr_t const maps, resultptrmapvecptr_t results, size_t ind
 	}
 }
 
-void find_orig(mapvecptr_t const maps) {
+void find_orig(mapvecptr_t const maps, std::shared_ptr<std::set<std::string>> const inflections) {
 	printw("\n\nPlease insert your word here: ");
 	std::string word;
-	insert(word);
+	input_inflections(word, inflections);
 	std::ofstream fout("temp", std::ios::trunc);
 	resultptrmapvecptr_t results = std::make_shared<resultmapvecptr_t>();
 	for (size_t i = 0; i < 7; ++i) {

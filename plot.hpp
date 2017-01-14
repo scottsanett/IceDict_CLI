@@ -58,12 +58,12 @@ void plotQuery(mapvecptr_t const maps, mapvecptr_t results, size_t index, std::s
 			}
 			else { str += i + '\t'; }
 		}
-		entry.push_back(str);
 		if (currentValue != initialValue) {
 			thisResult->insert(std::make_pair(initialKey, entry));
 			initialValue = currentValue;
 			entry.clear();
 		}
+		entry.push_back(str);
 		pos = std::next(pos);
 	}
 }

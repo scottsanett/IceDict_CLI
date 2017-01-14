@@ -2,6 +2,21 @@
 #define __ALPHABET_HPP__
 
 extern "C" {
+	extern char _binary___alphabet_wordindex_start;
+	extern char _binary___alphabet_wordindex_end;
+};
+
+extern "C" {
+	extern char _binary___alphabet_source_start;
+	extern char _binary___alphabet_source_end;
+};
+
+extern "C" {
+	extern char _binary___alphabet_zoega_start;
+	extern char _binary___alphabet_zoega_end;
+}
+
+extern "C" {
 	extern char _binary___alphabet_index_start;
 	extern char _binary___alphabet_index_end;
 }
@@ -9,6 +24,11 @@ extern "C" {
 extern "C" {
 	extern char _binary___alphabet_forms_start;
 	extern char _binary___alphabet_forms_end;
+}
+
+extern "C" {
+	extern char _binary___alphabet_inflection_start;
+	extern char _binary___alphabet_inflection_end;
 }
 
 extern "C" {

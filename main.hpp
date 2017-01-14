@@ -7,7 +7,6 @@
 #include "alias.hpp"
 #include "search.hpp"
 #include "import.hpp"
-#include "import_inflection.hpp"
 #include "search_inflection.hpp"
 #include "plot.hpp"
 #include "form.hpp"

@@ -14,17 +14,15 @@ int charType(char ch) {
 }
  
 /* autocomplete for icelandic - english dictionary */
-void autocomplete(mapentry_t & dict, std::string const & str, std::vector<std::string> & result) {	
+void autocomplete_icelandic(std::shared_ptr<std::set<std::string>> dict, std::string const & str, std::vector<std::string> & result) {
 	int height, width;
 	getmaxyx(stdscr, height, width);
 	if (height > 2) { height -= 2; }
-	std::string key;
 	size_t i = 0;
 	for (auto && entry : *dict) {
-		key = entry.first;
-		auto pos = key.find(str);
+		auto pos = entry.find(str);
 		if (pos == 0 && i < height) {
-			result.push_back(key);
+			result.push_back(entry);
 			++i;
 		}
 	}
@@ -68,6 +66,99 @@ void autocomplete(std::shared_ptr<std::set<std::string>> forms, std::string cons
 	}
 }
 
+/* autocomplete for a specific inflectional form */
+void autocomplete_inflection(std::shared_ptr<std::set<std::string>> inflections, std::string const & str, std::vector<std::string> & result) {
+	int height, width;
+	getmaxyx(stdscr, height, width);
+	if (height > 2) { height -= 2; }
+	size_t i = 0;
+	for (auto && entry : *inflections) {
+		auto pos = entry.find(str);
+		if (pos == 0 && i < height) {
+			result.push_back(entry);
+			++i;
+		}
+	}
+}
+/* input for two icelandic - english dictionaries */
+void input_icelandic(std::string & word, std::shared_ptr<std::set<std::string>> dict) {
+	int c;
+	size_t position;
+	std::string chosen;
+	std::vector<std::string> options;
+	while ((c = getch()) && (c != '\n')) {
+		clear();
+		if (c == KEY_BACKSPACE) {
+			position = 0;
+			options.clear();
+			clear();
+			delch();
+			if (charType(word.back()) == 0 || charType(word.back()) == 1) {
+				word = word.substr(0, word.length() - 1);
+			}
+			else if (charType(word.back()) == 5) {
+				delch();
+				word = word.substr(0, word.length() - 2);
+			}
+			autocomplete_icelandic(dict, word, options);
+		}
+		else if (c == KEY_DOWN) { // autocomplete
+			clear();
+			if (position < options.size() - 1) {
+				++position;
+			}
+			word = options[position];
+		}
+		else if (c == KEY_UP) {
+			clear();
+			if (position != 0) {
+				--position;
+			}
+			word = options[position];
+		}
+		else if (charType(c) == 0 || charType(c) == 1) {
+			position = 0;
+			options.clear();
+			word += c;
+			autocomplete_icelandic(dict, word, options);
+		}
+		else if (charType(c) == 5) { // special characters
+			position = 0;
+			options.clear();
+			word += c; c = getch(); word += c;
+			autocomplete_icelandic(dict, word, options);
+		}
+		if (options.size() > 0) {
+			printw(">> ");
+			for (auto i : word) {
+				addch(i | A_BOLD);
+			}
+			printw("\n\n");
+			for (size_t pos = 0; pos < options.size(); ++pos) {
+				if (pos == position) {
+					for (auto && i : options[pos]) {
+						addch(i | A_STANDOUT);
+					}
+					addch('\n');
+				}
+				else {
+					for (auto && i : options[pos]) {
+						addch(i | A_NORMAL);
+					}
+					addch('\n');
+				}
+			}
+		}
+		else {
+			printw(">> ");
+			for (auto i : word) {
+				waddch(stdscr, i | A_BOLD);
+			}
+		}
+		refresh();
+	}
+}
+
 /* input function for inflection autocomplete*/
 void input(std::string & word, std::shared_ptr<std::multimap<std::string, std::string>> const index) {
 	int c;
@@ -92,7 +183,7 @@ void input(std::string & word, std::shared_ptr<std::multimap<std::string, std::s
 		}
 		else if (c == KEY_DOWN) { // autocomplete
 			clear();
-			if (position < options.size()) {
+			if (position < options.size() - 1) {
 				++position;
 			}
 			word = options[position];
@@ -147,7 +238,7 @@ void input(std::string & word, std::shared_ptr<std::multimap<std::string, std::s
 	}
 }
 
-/* input function for inflection autocomplete*/
+/* input function for inflection form autocomplete*/
 void input(std::string & word, std::shared_ptr<std::set<std::string>> const index) {
 	int c;
 	size_t position;
@@ -170,7 +261,7 @@ void input(std::string & word, std::shared_ptr<std::set<std::string>> const inde
 		}
 		else if (c == KEY_DOWN) { // autocomplete
 			clear();
-			if (position < options.size()) {
+			if (position < options.size() - 1) {
 				++position;
 			}
 			word = options[position];
@@ -193,6 +284,84 @@ void input(std::string & word, std::shared_ptr<std::set<std::string>> const inde
 			options.clear();
 			word += c; c = getch(); word += c;
 			autocomplete(index, word, options);
+		}
+		if (options.size() > 0) {
+			printw(">> ");
+			for (auto i : word) {
+				addch(i | A_BOLD);
+			}
+			printw("\n\n");
+			for (size_t pos = 0; pos < options.size(); ++pos) {
+				if (pos == position) {
+					for (auto && i : options[pos]) {
+						addch(i | A_STANDOUT);
+					}
+					addch('\n');
+				}
+				else {
+					for (auto && i : options[pos]) {
+						addch(i | A_NORMAL);
+					}
+					addch('\n');
+				}
+			}
+		}
+		else {
+			printw(">> ");
+			for (auto i : word) {
+				waddch(stdscr, i | A_BOLD);
+			}
+		}
+		refresh();
+	}
+}
+
+/* input function for all inflectional forms */
+void input_inflections(std::string & word, std::shared_ptr<std::set<std::string>> const inflections) {
+	int c;
+	size_t position;
+	std::vector<std::string> options;
+	while ((c = getch()) && (c != '\n')) {
+		clear();
+		if (c == KEY_BACKSPACE) {
+			position = 0;
+			options.clear();
+			clear();
+			delch();
+			if (charType(word.back()) == 0 || charType(word.back()) == 1) {
+				word = word.substr(0, word.length() - 1);
+			}
+			else if (charType(word.back()) == 5) {
+				delch();
+				word = word.substr(0, word.length() - 2);
+			}
+			autocomplete_inflection(inflections, word, options);
+		}
+		else if (c == KEY_DOWN) { // autocomplete
+			clear();
+			if (position < options.size() - 1) {
+				++position;
+			}
+			word = options[position];
+		}
+		else if (c == KEY_UP) {
+			clear();
+			if (position != 0) {
+				--position;
+			}
+			word = options[position];
+		}
+		else if (charType(c) == 0 || charType(c) == 1) {
+			position = 0;
+			options.clear();
+			word += c;
+			autocomplete_inflection(inflections, word, options);
+		}
+		else if (charType(c) == 5) { // special characters
+			position = 0;
+			options.clear();
+			word += c; c = getch(); word += c;
+			autocomplete_inflection(inflections, word, options);
 		}
 		if (options.size() > 0) {
 			printw(">> ");
