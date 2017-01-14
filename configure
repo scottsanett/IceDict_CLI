@@ -1,8 +1,11 @@
 #! /bin/bash
 
+objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/wordindex wordindex.o
+objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/zoega zoega.o
 objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/source source.o
 objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/index index.o
 objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/forms forms.o
+objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/inflection inflection.o
 
 for i in 1 2 3 4 5 6 7; do
     objcopy -I binary -O elf64-x86-64 -B i386 ./alphabet/$i ./$i.o
@@ -10,7 +13,7 @@ done
 
 compilation="1.o 2.o 3.o 4.o 5.o 6.o 7.o"
 
-g++ -pthread -lncurses main.cpp source.o index.o forms.o $compilation -o dic
+g++ -pthread -lncurses main.cpp wordindex.o zoega.o source.o index.o forms.o inflection.o $compilation -o dic
 
-rm source.o index.o forms.o $compilation
+rm wordindex.o zoega.o source.o index.o forms.o inflection.o $compilation
 
