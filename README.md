@@ -14,6 +14,9 @@ One may also choose to print all inflectional forms of a word, in which case the
 
 Lastly, one may find a specific inflectional form of a word. The inflectional forms (from where one may choose) are displayed below as one type.
 
+Screenshot:
+https://github.com/scottsanett/Old-Icelandic-Dictionary/issues/1
+
 
 #Build:
 This dictionary runs on LINUX only.
