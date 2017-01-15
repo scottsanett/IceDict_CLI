@@ -1,3 +1,4 @@
+
 #Old Icelandic Dictionary
 
 #Info:
@@ -16,7 +17,8 @@ Lastly, one may find a specific inflectional form of a word. The inflectional fo
 
 Screenshots:
 https://github.com/scottsanett/Old-Icelandic-Dictionary/issues/1
-
+Demonstration:
+https://www.youtube.com/watch?v=_MoorYEwtSk&feature=youtu.be
 
 #Build:
 This dictionary runs on LINUX only.
