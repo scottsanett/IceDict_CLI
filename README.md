@@ -1,4 +1,4 @@
-# Old Icelandic Dictionary
+#s Old Icelandic Dictionary
 
 This dictionary runs on LINUX only.
 
@@ -11,7 +11,7 @@ Compile:
 
 1. Create a new folder named alphabet in the root directory of the dictionary and extract all files in the rar file into ./alphabet.
 
-2. Run ./configure (The uploaded configure file works for x64 Linux. One needs to modify the configure file for other architecture).
+2. Run ./configure (The uploaded configure file works for x64 Linux. One needs to modify the configure file for other architectures).
 
 3. Run ./dic and you're good to go.
 
