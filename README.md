@@ -26,7 +26,7 @@ This dictionary runs on LINUX only.
 Dependencies: ncurses, pthread
 
 The dictionary files can be downloaded from this link: 
-http://pan.baidu.com/s/1bpkon5l
+http://pan.baidu.com/s/1eS40PV0
 
 Compile:
 
