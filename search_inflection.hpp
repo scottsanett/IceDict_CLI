@@ -61,7 +61,7 @@ void find_orig(mapvecptr_t const maps, std::shared_ptr<std::set<std::string>> co
 		fout << " been found.\n" << line;
         for (auto i : *results) {
 			for (auto j : *i) {
-				fout << "\033[1m" << j.first << "\033[0m\t" << j.second << line;
+				fout << "\t\033[1m" << j.first << "\033[0m\t" << j.second << line;
 			}
         }
     }

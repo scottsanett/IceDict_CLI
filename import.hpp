@@ -35,9 +35,14 @@ void import(std::shared_ptr<std::vector<mapentry_t>> dictvec, std::shared_ptr<st
 		bool flag = true;
 		std::string temp;
 		std::string sentence;
-		size_t index = 1;
+//		size_t index = 1;
 		while (iss >> temp) {
 			if (temp[0] != '+') {
+				if (temp[0] == '@') { temp = temp.substr(1, temp.length() - 1); }
+				else if (temp[0] == '$') { temp = temp.substr(1, temp.length() - 1); }
+				else if (temp[0] == '%') { temp = "\t" + temp.substr(1, temp.length() - 1); }
+				else if (temp[0] == '&') { temp = "\t\t" + temp.substr(1, temp.length() - 1); }
+				else {}
 				if (std::find(temp.begin(), temp.end(), '[') != temp.end()) {
 					flag = false;
 					auto pos4 = temp.find('[');
@@ -48,6 +53,7 @@ void import(std::shared_ptr<std::vector<mapentry_t>> dictvec, std::shared_ptr<st
 					auto pos5 = temp.find(']');
 					if (pos5 != std::string::npos) { temp.insert(pos5, "\033[0m"); }
 				}
+				if (temp[0] == '`') { temp = "\033[1;4m" + temp.substr(1, temp.length() - 1) + "\033[0m"; }
 				auto pos1 = temp.find('(');
 				if (pos1 != std::string::npos) { temp.insert(pos1 + 1, "\033[1;34m"); }
 				auto pos2 = temp.find(')');
@@ -77,13 +83,14 @@ void import(std::shared_ptr<std::vector<mapentry_t>> dictvec, std::shared_ptr<st
 						temp += "\033[0m";
 					}
 				}
-				sentence = (flag) ? "\t" + std::to_string(index) + ". " : "";
+				sentence = (flag) ? "\t" /*+ std::to_string(index) + ". " */ : "";
 				index += (flag) ? 1 : 0;
 				temp = temp.substr(1);
 			}
 			temp += " ";
 			sentence += temp;
 		}
+		toLower(name);
 		ptr_t ent(new Entry(name, vec));
 		dict->insert(std::make_pair(name, ent));
 	};

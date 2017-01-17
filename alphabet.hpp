@@ -7,8 +7,8 @@ extern "C" {
 };
 
 extern "C" {
-	extern char _binary___alphabet_source_start;
-	extern char _binary___alphabet_source_end;
+	extern char _binary___alphabet_vifgusson_start;
+	extern char _binary___alphabet_vifgusson_end;
 };
 
 extern "C" {
@@ -78,5 +78,31 @@ std::map<size_t, strptr_t> alphabet = {
 	std::make_pair(6, strptr_t(new std::string(&_binary___alphabet_6_start, &_binary___alphabet_6_end))),
 	std::make_pair(7, strptr_t(new std::string(&_binary___alphabet_7_start, &_binary___alphabet_7_end))),
 };
+
+void toLower(std::string & name) {
+	std::vector<std::string> upper = { "Þ", "Ð", "Æ", "Ö", "Á", "É", "Í", "Ó", "Ú", "Ý", "Œ" };
+	std::vector<std::string> lower = { "þ", "ð", "æ", "ö", "á", "é", "í", "ó", "ú", "ý", "œ" };
+	[&]() { for (auto i = 0; i < name.length(); ++i) {
+		if (std::isalpha(name[i])) {
+			if (std::isupper(name[i])) {
+				name[i] = std::tolower(name[i]);
+			}
+		}
+		else {
+			if ((name[i] == upper[0][0]) && (name[i + 1] == upper[0][1])) { name[i] = lower[0][0]; name[i + 1] = lower[0][1]; i += 1; }
+			else if ((name[i] == upper[1][0]) && (name[i + 1] == upper[1][1])) { name[i] = lower[1][0]; name[i + 1] = lower[1][1]; i += 1; }
+			else if ((name[i] == upper[2][0]) && (name[i + 1] == upper[2][1])) { name[i] = lower[2][0]; name[i + 1] = lower[2][1]; i += 1; }
+			else if ((name[i] == upper[3][0]) && (name[i + 1] == upper[3][1])) { name[i] = lower[3][0]; name[i + 1] = lower[3][1]; i += 1; }
+			else if ((name[i] == upper[4][0]) && (name[i + 1] == upper[4][1])) { name[i] = lower[4][0]; name[i + 1] = lower[4][1]; i += 1; }
+			else if ((name[i] == upper[5][0]) && (name[i + 1] == upper[5][1])) { name[i] = lower[5][0]; name[i + 1] = lower[5][1]; i += 1; }
+			else if ((name[i] == upper[6][0]) && (name[i + 1] == upper[6][1])) { name[i] = lower[6][0]; name[i + 1] = lower[6][1]; i += 1; }
+			else if ((name[i] == upper[7][0]) && (name[i + 1] == upper[7][1])) { name[i] = lower[7][0]; name[i + 1] = lower[7][1]; i += 1; }
+			else if ((name[i] == upper[8][0]) && (name[i + 1] == upper[8][1])) { name[i] = lower[8][0]; name[i + 1] = lower[8][1]; i += 1; }
+			else if ((name[i] == upper[9][0]) && (name[i + 1] == upper[9][1])) { name[i] = lower[9][0]; name[i + 1] = lower[9][1]; i += 1; }
+			else if ((name[i] == upper[10][0]) && (name[i + 1] == upper[10][1])) { name[i] = lower[10][0]; name[i + 1] = lower[10][1]; i += 1; }
+			else {}
+		}
+	} }();
+}
 
 #endif

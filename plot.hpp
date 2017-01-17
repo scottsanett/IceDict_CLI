@@ -104,7 +104,7 @@ void plot(mapvecptr_t const maps, std::shared_ptr<std::multimap<std::string, std
 		for (auto && j : *i) {
 			fout << "\033[1m" << j.first << "\033[0m" << "\n\n";
 			for (auto && k : j.second) {
-				fout << k << '\n';
+				fout << '\t' << k << '\n';
 			}
 			fout << line;
 		}

@@ -1,7 +1,7 @@
 ﻿#include "main.hpp"
 
 int main() {
-	system("resize -s 40 70");
+	system("resize -s 40 75");
 	initscr(); cbreak(); timeout(-1); noecho(); keypad(stdscr, TRUE);
 	waddstr(stdscr, "Initializing...\n\n"); wrefresh(stdscr);
 	std::chrono::time_point<std::chrono::system_clock> start, end;
@@ -15,7 +15,7 @@ int main() {
 	for (size_t i = 0; i < 7; ++i) {
 		mapptr->push_back(mapptr_t(new infl_t));
 	}
-	std::shared_ptr<std::string> vifgusson(new std::string(&_binary___alphabet_source_start, &_binary___alphabet_source_end));
+	std::shared_ptr<std::string> vifgusson(new std::string(&_binary___alphabet_vifgusson_start, &_binary___alphabet_vifgusson_end));
 	std::shared_ptr<std::string> zoega(new std::string(&_binary___alphabet_zoega_start, &_binary___alphabet_zoega_end));
 
 	auto index = std::shared_ptr<std::multimap<std::string, std::string>>(new std::multimap<std::string, std::string>);

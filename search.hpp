@@ -220,18 +220,19 @@ void searchIcl(std::shared_ptr<std::vector<mapentry_t>> & dict, std::shared_ptr<
 	auto size = [&]() { size_t sz = 0; for (auto && i : *results) { sz += i->size(); } return sz; }();
 	if (size == 0) { printw("Word not found.\n"); }
 	else {
-		std::string line;
+		std::string line, doubleline;
 		int y, x;
 		getmaxyx(stdscr, y, x);
-		for (size_t i = 0; i < x; ++i) { line += "-"; }
+		for (size_t i = 0; i < x; ++i) { line += "-"; doubleline += "="; }
 		line = "\n" + line + "\n\n";
+		doubleline += "\n\n";
 		for (auto && i : *results) {
 			for (auto && j : *i) {
 				fout << line;
 				fout << "\033[1m" + j.first + "\033[0m" << ", ";
 				fout << j.second << '\n';
 			}
-			fout << line;
+			fout << doubleline;
 		}
 	}
 	fout.close(); display();
