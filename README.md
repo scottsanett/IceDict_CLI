@@ -1,14 +1,14 @@
 #Old Icelandic Dictionary
 
 #Info:
-This application contains two Old Icelandic English dictionaries from Zoega and Vifgusson, respectively.
+This application contains two Old Icelandic English dictionaries from Zoega and Cleasby & Vifgusson.
 
-It supports searching searching Icelandic words for its definition and searching text the said dictionaries with or without regular expression. Regex is implemented with the C++ regex library, and searches may be accomplished with ECMAscript regex syntax.
+It supports searching searching Icelandic words for its definition and searching text in the said dictionaries with or without regular expression. Regex is implemented with the C++ regex library, and searches may be accomplished with ECMAscript regex syntax.
 
 
 This application also supports inflectional search. Source data of this search is provided by bin.arnastofnun.is/forsida, where one may download a copy of the csv data file.
 
-One may insert any word in the database (indicated by the alternatives displayed below as one type) to find out its original form as well as its inflectional status. 
+One may type any word in the database (indicated by the alternatives displayed below as one type) to find out its original form as well as its inflectional status. 
 
 One may also choose to print all inflectional forms of a word, in which case the word needs to be the originial form. 
 
@@ -26,7 +26,7 @@ This dictionary runs on LINUX only.
 Dependencies: ncurses, pthread
 
 The dictionary files can be downloaded from this link: 
-http://pan.baidu.com/s/1qXDZ7Ak
+http://pan.baidu.com/s/1bpkon5l
 
 Compile:
 
