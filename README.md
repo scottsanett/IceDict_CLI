@@ -8,11 +8,11 @@ It supports searching searching Icelandic words for its definition and searching
 
 This application also supports inflectional search. Source data of this search is provided by bin.arnastofnun.is/forsida, where one may download a copy of the csv data file.
 
-One may type any word in the database (indicated by the alternatives displayed below as one type) to find out its original form as well as its inflectional status. 
+One may type any word in the database (indicated by the alternatives displayed below as one types) to find out its original form as well as its inflectional status. 
 
 One may also choose to print all inflectional forms of a word, in which case the word needs to be the originial form. 
 
-Lastly, one may find a specific inflectional form of a word. The inflectional forms (from where one may choose) are displayed below as one type.
+Lastly, one may find a specific inflectional form of a word. The inflectional forms (from where one may choose) are displayed below as one types.
 
 Screenshots:
 https://github.com/scottsanett/Old-Icelandic-Dictionary/issues/1
